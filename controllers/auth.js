@@ -1,7 +1,5 @@
 exports.register = (req, res) => {    
-    res.json({
-        data: 'you hit register endpoint middleware... USING CONTROLER'
-    })
+    console.log("REGISTER CONTROLLER", req.body)
 };
 
 

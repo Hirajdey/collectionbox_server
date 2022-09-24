@@ -4,6 +4,6 @@ const router = express.Router();
 // import from controllers
 const { register } = require('../controllers/auth')
 
-router.get('/register', register);
+router.post('/register', register);
 
 module.exports = router;
