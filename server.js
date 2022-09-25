@@ -12,14 +12,14 @@ const authRoutes = require('./routes/auth');
 
 // app middlewares
 app.use(morgan('dev'));
-app.use(bodyParser.json);
+app.use(bodyParser.json());
 // app.use(cors());
 app.use(cors({origin: process.env.CLIENT_URL}));
 
 // middlewares
 app.use('/api', authRoutes);
 
-const port = process.env.PORT;
+const port = process.env.PORT || 8000;
 
 app.listen(port, () => console.log(`API is running on ${port}`));
 
