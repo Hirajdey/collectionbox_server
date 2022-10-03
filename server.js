@@ -7,6 +7,11 @@ require('dotenv').config();
 
 const app = express();
 
+// database connect
+mongoose.connect(process.env.DATABASE_CLOUD, {useNewUrlParser: true, useUnifiedTopology: true})
+.then(() => console.log("DB connected Successfully"))
+.catch((errer) => console.log("DB Error :", errer))
+
 // import routes
 const authRoutes = require('./routes/auth');
 
@@ -19,7 +24,7 @@ app.use(cors({origin: process.env.CLIENT_URL}));
 // middlewares
 app.use('/api', authRoutes);
 
-const port = process.env.PORT || 8000;
+const port = process.env.PORT;
 
 app.listen(port, () => console.log(`API is running on ${port}`));
 
