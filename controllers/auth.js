@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const AWS = require('aws-sdk');
 const jwt = require('jsonwebtoken');
+const { expressjwt } = require('express-jwt'); 
 const { registerEmailParams } = require('../helpers/email');
 const shortId = require('shortid');
 
@@ -118,6 +119,48 @@ exports.login = (req, res) => {
 
     });
 }
+
+exports.requireSignin = expressjwt({secret: process.env.JWT_SECRET, algorithms: ['RS256']}); // req.user
+
+// place after requireSignin middleware in route
+exports.authMiddleware = (req, res, next) => {
+    const authUserId = req.user._id; // this user._id available from requireSignin middleware
+    
+    User.findOne({_id: authUserId}).exec((err, user) => {
+        
+        if(err || !user){
+            return res.status(400).json({
+                error: "User not found"
+            })
+        }
+
+        req.profile = user;
+        next()
+    })
+}
+
+exports.adminMiddleware = (req, res, next) => {
+    const adminUserId = req.user._id; // this user._id available from requireSignin middleware
+    
+    User.findOne({_id: adminUserId}).exec((err, user) => {
+        
+        if(err || !user){
+            return res.status(400).json({
+                error: "User not found"
+            })
+        }
+
+        if(user.role !== 'admin'){
+            return res.status(400).json({
+                error: "Admin resource. Access denied"
+            })
+        }
+
+        req.profile = user;
+        next()
+    })
+}
+
 
 
 
