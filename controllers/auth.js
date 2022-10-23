@@ -120,12 +120,12 @@ exports.login = (req, res) => {
     });
 }
 
-exports.requireSignin = expressjwt({secret: process.env.JWT_SECRET, algorithms: ['RS256']}); // req.user
+exports.requireSignin = expressjwt({secret: process.env.JWT_SECRET, algorithms: ['HS256']}); // req.user
 
 // place after requireSignin middleware in route
 exports.authMiddleware = (req, res, next) => {
-    const authUserId = req.user._id; // this user._id available from requireSignin middleware
-    
+    const authUserId = req.auth._id; // this auth._id available from requireSignin middleware
+   
     User.findOne({_id: authUserId}).exec((err, user) => {
         
         if(err || !user){
@@ -140,7 +140,7 @@ exports.authMiddleware = (req, res, next) => {
 }
 
 exports.adminMiddleware = (req, res, next) => {
-    const adminUserId = req.user._id; // this user._id available from requireSignin middleware
+    const adminUserId = req.auth._id; // this auth._id available from requireSignin middleware
     
     User.findOne({_id: adminUserId}).exec((err, user) => {
         
